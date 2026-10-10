@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Màn hình đạo cụ phim – Màn 4 đến 8</title>
+<style>
+:root{box-sizing:border-box;--bg:#0f172a;--ln:#1e293b;--tx:#cbd5e1;--dim:#64748b;--red:#ef4444;--grn:#22c55e;--yel:#eab308;--blu:#2563eb}
+*{box-sizing:inherit;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--tx);font:11px Inter,'Segoe UI',system-ui,sans-serif;overflow:hidden}
+.m{font-family:Consolas,'SF Mono',Menlo,monospace}
+.scr{display:none;position:absolute;inset:0;overflow:hidden}.scr.on{display:flex;flex-direction:column}
+.red{color:var(--red)}.grn{color:var(--grn)}.yel{color:var(--yel)}.dim{color:var(--dim)}.b{font-weight:700}
+table{border-collapse:collapse;width:100%}td,th{padding:4px 8px;border:1px solid var(--ln);text-align:left;white-space:nowrap}
+th{background:#1e293b;font-weight:600}
+button{font:inherit;cursor:pointer;border:1px solid #475569;background:#334155;color:#e2e8f0;padding:5px 12px}
+.bar{display:flex;gap:16px;align-items:center;padding:4px 10px;background:#020617;border-bottom:1px solid var(--ln)}
+.win{background:#111827;border:1px solid #475569;box-shadow:0 20px 60px #000c}
+.tt{background:#1f2937;padding:5px 8px;display:flex;justify-content:space-between;border-bottom:1px solid #374151;font-weight:600}
+#fs{position:fixed;top:30px;right:10px;z-index:10;font-size:11px;padding:4px 10px;background:#000a;border:1px solid #64748b;color:#e2e8f0;border-radius:3px;opacity:.55;transition:.2s}#fs:hover{opacity:1}#fs.hide{display:none}
+#hint{position:fixed;right:8px;bottom:4px;font-size:9px;color:#475569;z-index:9;opacity:0;transition:.3s}#hint.on{opacity:1}
+@keyframes bl{50%{opacity:.25}}.blink{animation:bl 1s infinite}
+/* S4 */
+#s4{background:#0f172a}
+#s4 .stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 20%,#1e293b,#0f172a 70%)}
+#s4 .w{position:absolute;top:14px;left:14px;display:grid;gap:8px}
+#s4 .w div{border:1px solid var(--ln);padding:6px 10px;width:200px;background:#0b1222cc}
+#s4 .win{width:700px;max-width:96%;transition:all .5s cubic-bezier(.6,0,.4,1);transform-origin:bottom right}
+#s4 .win.min{transform:translate(48vw,42vh) scale(.02);opacity:0}
+#tb{height:26px;background:#020617;border-top:1px solid var(--ln);display:flex;align-items:center;gap:12px;padding:0 10px}
+#snz{display:none;border:1px solid var(--yel);color:var(--yel);padding:2px 8px}
+/* S5 */
+#s5{background:#111827;border:2px solid transparent}#s5.al{animation:bd 1s infinite}
+@keyframes bd{50%{border-color:var(--red);box-shadow:inset 0 0 40px #ef444488}}
+.cols{flex:1;display:flex;min-height:0}
+.tree{width:240px;border-right:1px solid var(--ln);padding:8px;line-height:1.9;background:#0b1220}
+.main{flex:1;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.nd{border:1px solid #166534;background:#052e1688;padding:6px;line-height:1.5;transition:.3s}
+.nd.x{border-color:var(--red);background:#450a0a;color:#fca5a5}
+.nd .st{margin-top:4px;font-weight:700;color:var(--grn)}.nd.x .st{color:var(--red)}
+.log{height:140px;background:#030712;border-top:1px solid var(--ln);padding:6px 10px;overflow:hidden;font-size:10px;line-height:1.5}
+/* S6 */
+#s6{background:#e5e7eb;color:#111}
+#s6 .nav{background:#212121;color:#ddd;display:flex;gap:22px;padding:7px 14px}#s6 .nav b{color:#fff;margin-right:10px}
+#s6 .al{margin:8px 14px;padding:8px 12px;background:#fff3cd;border:1px solid #ffc107;display:flex;justify-content:space-between;align-items:center}
+#s6 button{background:#d32f2f;border-color:#b71c1c;color:#fff}
+#s6 table{background:#fff}#s6 td,#s6 th{border-color:#d1d5db;color:#111}#s6 th{background:#e5e7eb}
+#r1.hot{outline:2px solid #fb923c;outline-offset:-2px;background:#fff7ed;animation:bl 1.2s infinite}
+#pg{height:3px;background:#2563eb;width:0;transition:width 1.2s}
+#s6 .side{width:340px;background:#111827;color:#cbd5e1;padding:8px;border-left:2px solid #374151}
+/* S7 */
+#s7{background:#1e1e1e;color:#d4d4d4;font-family:'Segoe UI',sans-serif}
+#s7 .tb{background:#2d2d30;padding:5px 10px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #3f3f46}
+#s7 .tb span{background:#3f3f46;padding:2px 7px}
+#s7 .oe{width:280px;background:#252526;border-right:1px solid #3f3f46;padding:8px;line-height:1.9}
+#s7 .ed{flex:1;position:relative;background:#1e1e1e;padding:10px}
+#s7 .win{position:absolute;top:40px;left:50%;margin-left:-310px;width:620px;height:400px;background:#2d2d30;display:flex;flex-direction:column}
+#s7 .ms{height:130px;background:#1e1e1e;border-top:1px solid #3f3f46;padding:6px 10px}
+#s7 td,#s7 th{border-color:#3f3f46}#s7 th{background:#3a3a3d}
+.ck{display:inline-block;width:12px;height:12px;border:1px solid #888;vertical-align:middle;text-align:center;line-height:10px;cursor:pointer}.ck.on{background:#16a34a;border-color:#16a34a;color:#fff}
+/* S8 */
+#s8{background:#09090b;border:3px solid #7f1d1d}#s8.go{animation:st 1s infinite}
+@keyframes st{0%,100%{border-color:#ef4444;box-shadow:inset 0 0 90px #ef444466;background:#1a0505}50%{border-color:#000;box-shadow:none;background:#09090b}}
+#s8 h1{font-size:30px;color:var(--red);letter-spacing:.5px;text-align:center;padding:10px 0;display:none}
+#s8.go h1{display:block}
+.cd{font-size:22px;color:var(--red);font-weight:700}
+.ac{border:1px solid #991b1b;box-shadow:0 0 14px #ef444455;background:#1c0a0a;padding:10px;line-height:1.55;display:none}.ac.on{display:block;animation:pop .35s}
+@keyframes pop{from{transform:scale(.8);opacity:0}}
+.ac h3{font-size:12px;color:#fff;margin-bottom:6px}
+#s8 .log{flex:1;color:#f87171;height:auto;border-top:1px solid #7f1d1d}
+#lk{background:#450a0a;color:#fca5a5;border-color:#7f1d1d;cursor:not-allowed;padding:8px 20px;font-weight:700}
+</style></head><body>
+
+<!-- MÀN 4 -->
+<div class="scr on" id="s4">
+ <div class="bar m"><b>ai-node-ws03</b><span>IP 10.0.4.15</span><span>CPU 12%</span><span>RAM 48/128GB</span><span>Uptime 182 days</span><span style="margin-left:auto" class="dim">Ubuntu Studio 22.04 LTS</span></div>
+ <div class="stage">
+  <div class="w m"><div>CPU <span class="grn">▮▮▯▯▯▯▯▯</span> 12%</div><div>RAM <span class="grn">▮▮▮▯▯▯▯▯</span> 48GB</div><div>NET I/O ↓ 4.2MB/s ↑ 0.8MB/s</div></div>
+  <div class="win" id="m4">
+   <div class="tt"><span><span class="yel blink">⚠</span> Enterprise Endpoint Compliance Auditor</span><span class="dim">_ □ ✕</span></div>
+   <div style="padding:10px">
+    <div class="b red" style="font-size:12px;margin-bottom:8px">CRITICAL COMPLIANCE AUDIT: CONFIGURATION DRIFT DETECTED [SEVERITY: HIGH]</div>
+    <table class="m" style="font-size:10.5px"><tr><th>Policy Component</th><th>Current Host State</th><th>University Baseline Target</th><th>Status</th></tr>
+     <tr><td>OS Kernel</td><td>6.5.0-generic</td><td>6.5.0-45-hardened</td><td class="red">MISMATCH</td></tr>
+     <tr><td>Security KB</td><td>Missing 14 CVE patches (184d)</td><td>0 pending</td><td class="red b">HIGH RISK</td></tr>
+     <tr><td>Listening Ports</td><td>TCP/2222 OpenSSH, TCP/8888 Jupyter</td><td>Registered only</td><td class="yel">UNAUTHORIZED</td></tr>
+     <tr><td>SELinux / AppArmor</td><td>Permissive / disabled</td><td>Enforcing</td><td class="red">VIOLATION</td></tr>
+     <tr><td>Agent Sync</td><td>Heartbeat timeout, 42 days</td><td>&lt; 24h</td><td class="red">STALE</td></tr></table>
+    <div style="margin:12px 0 8px" class="m"><label><input type="checkbox"> Acknowledge non-compliance liability under University IT Charter</label></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+     <button style="background:#1d4ed8;border-color:#1e40af">Enforce Baseline &amp; Patch Reboot</button>
+     <button id="sn" style="border-color:var(--yel)">Snooze &amp; Remind Later: <select id="sd" style="background:#1f2937;color:#e2e8f0;border:0;font:inherit"><option>3 Days</option><option>1 Day</option><option>7 Days</option></select></button>
+    </div></div></div>
+  <div class="m dim" style="position:absolute;bottom:8px;left:14px">CrowdStrike Falcon Agent v7.14 · Tanium Client 7.4</div>
+ </div>
+ <div id="tb" class="m"><b>☰ Activities</b><span class="dim">Terminal</span><span class="dim">Files</span><span id="snz">⏰ Compliance audit snoozed (3 days)</span><span style="margin-left:auto" class="dim" id="clk"></span></div>
+</div>
+
+<!-- MÀN 5 -->
+<div class="scr" id="s5">
+ <div class="bar"><b>Proxmox VE 8.1 · Datacenter</b><span id="q" class="m grn b">QUORUM OK – 10/10 VOTES</span><span class="dim" style="margin-left:auto">root@pam</span></div>
+ <div class="cols">
+  <div class="tree m" id="tr"></div>
+  <div class="main">
+   <div class="m dim">Datacenter &gt; DC-CAMPUS-CORE &gt; Cluster-01 &gt; Summary</div>
+   <div class="grid5 m" id="g5"></div>
+   <div style="border:1px solid var(--ln);padding:6px;flex:1;min-height:0;position:relative">
+    <div class="m">Cluster Network Throughput <b id="thr" class="grn">9.8 Gbps</b></div>
+    <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="width:100%;height:calc(100% - 18px)"><polyline id="pl" fill="none" stroke="#22c55e" stroke-width="2" points=""/></svg></div>
+   <div class="m" style="background:#000;border:1px solid var(--ln);padding:6px" id="term">root@ctl-01:~# <span id="cmd"></span></div>
+  </div></div>
+ <div class="log m" id="l5"><div>00:04:58 | root@pam | Batch dist-upgrade sent to 10 targets | OK</div></div>
+</div>
+
+<!-- MÀN 6 -->
+<div class="scr" id="s6">
+ <div class="nav"><b>pfSense</b><span>System</span><span>Interfaces</span><span style="color:#fff;border-bottom:2px solid #fff">Firewall</span><span>Services</span><span>VPN</span><span>Status</span><span>Diagnostics</span></div>
+ <div id="pg"></div>
+ <div class="al" id="al6"><span>The firewall configuration has been changed.<br>You must apply the changes in order for them to take effect.</span><button id="ap">✔ Apply Changes</button></div>
+ <div class="cols" style="padding:0 14px 14px;gap:12px">
+  <div style="flex:1;min-width:0"><div class="b" style="padding:4px 0">Firewall / Rules / WAN</div>
+   <table><tr><th>States</th><th>Protocol</th><th>Source</th><th>Port</th><th>Destination</th><th>Port</th><th>Gateway</th><th>Description</th></tr>
+    <tr id="r1" class="hot"><td>18.4K / 120 MiB</td><td><span class="grn">✔</span> IPv4 *</td><td class="b" style="color:#dc2626">* (0.0.0.0/0 ANY)</td><td>*</td><td>Internal_Server_Subnet (10.0.1.0/24)</td><td>8080, 22</td><td>*</td><td>Tam thoi bypass firewall de tai file nang - Nho dong lai</td></tr>
+    <tr><td>0 / 0 B</td><td>✖ IPv4 *</td><td>RFC1918 networks</td><td>*</td><td>*</td><td>*</td><td>*</td><td>Block private networks</td></tr>
+    <tr><td>0 / 0 B</td><td>✖ IPv4 *</td><td>Reserved/not assigned</td><td>*</td><td>*</td><td>*</td><td>*</td><td>Block bogon networks</td></tr>
+    <tr><td>212 / 14 MiB</td><td><span class="grn">✔</span> IPv4 TCP</td><td>203.0.113.0/28</td><td>*</td><td>WAN address</td><td>443</td><td>*</td><td>Admin HTTPS (campus)</td></tr></table></div>
+  <div class="side m"><div class="b" style="margin-bottom:4px">Traffic Graph – WAN</div><div id="pps" class="yel b" style="margin-bottom:6px">Packets In: 0 pkts/sec</div><div class="b" style="margin-bottom:4px">Live Inbound State Table</div><div id="st" style="font-size:10px;line-height:1.6;overflow:hidden;height:420px"></div></div>
+ </div>
+</div>
+
+<!-- MÀN 7 -->
+<div class="scr" id="s7">
+ <div class="tb"><span>File</span><span>Edit</span><span>View</span><span>Query</span><span>Tools</span>&nbsp;<span>▶ Execute</span><span>New Query</span><span>Portal_Production_DB ▾</span><span style="margin-left:auto">User: sa</span></div>
+ <div class="cols">
+  <div class="oe m">HCM-DB-PROD\MSSQLSERVER<br>▾ Databases<br>&nbsp;&nbsp;▾ Portal_Production_DB<br>&nbsp;&nbsp;&nbsp;&nbsp;▾ Tables<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbo.tbl_Users<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b style="background:#094771;color:#fff">dbo.tbl_Financial_Transactions</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbo.tbl_Students<br>&nbsp;&nbsp;▸ Security</div>
+  <div class="ed">
+   <div class="m dim">SELECT TOP 100 * FROM dbo.tbl_Financial_Transactions;</div>
+   <div class="win" id="m7"><div class="tt" style="background:#3a3a3d"><span>Table Properties – Explicit Permissions</span><span>✕</span></div>
+    <div style="padding:12px;flex:1">
+     <div style="margin-bottom:8px">User: <b>Service_Account_Test</b> <span class="dim">(Automation Batch Runner)</span></div>
+     <table><tr><th>Permission</th><th>Grantor</th><th>Grant</th></tr>
+      <tr><td>DELETE</td><td>dbo</td><td><span class="ck on" data-k>✔</span></td></tr>
+      <tr><td>INSERT</td><td>dbo</td><td><span class="ck on" data-k>✔</span></td></tr>
+      <tr><td>SELECT</td><td>dbo</td><td><span class="ck on" data-k>✔</span></td></tr>
+      <tr><td>UPDATE</td><td>dbo</td><td><span class="ck on" data-k>✔</span></td></tr>
+      <tr><td>ALTER</td><td>dbo</td><td><span class="ck" data-k></span></td></tr></table>
+     <div class="yel" style="margin-top:10px">⚠ Granting Write/Delete privileges on financial ledger bypasses separation of duties (SoD) policies.</div></div>
+    <div style="padding:8px;text-align:right;border-top:1px solid #3f3f46"><button id="ok7">OK</button> <button id="cn7">Cancel</button></div></div>
+  </div></div>
+ <div class="ms m"><div class="dim" style="border-bottom:1px solid #3f3f46;margin-bottom:4px">Messages</div><div id="o7" class="grn"></div></div>
+</div>
+
+<!-- MÀN 8 -->
+<div class="scr" id="s8">
+ <div class="bar m" style="background:#18181b;border-color:#7f1d1d"><span class="red b" style="font-size:13px"><span class="blink">🚨</span> UNIVERSITY SOC – SECURITY INCIDENT RESPONSE DASHBOARD</span><span class="cd blink" style="margin-left:auto">COUNTDOWN TO BGH DEMO: <span id="cd">05:08:42</span></span></div>
+ <h1 class="m blink">INCIDENT LEVEL 1: CRITICAL DATA BREACH &amp; SERVICE DESTRUCTION</h1>
+ <div class="grid5 m" style="padding:10px;min-height:160px;align-items:start">
+  <div class="ac"><h3>ALERT #101 [INFRA]</h3>Port 8080 RCE exploit via WAN 0.0.0.0/0<br>Src IP: <span class="red">185.220.101.5</span></div>
+  <div class="ac"><h3>ALERT #102 [PRIVACY]</h3>1,540 unmasked National IDs (CCCD) leaked from Test DB to public S3</div>
+  <div class="ac"><h3>ALERT #103 [DATA]</h3>tbl_Financial_Transactions overwritten with NULL by Test Account</div>
+  <div class="ac"><h3>ALERT #104 [FINANCE]</h3>Unauthorized PayPal API draining transactions detected</div>
+  <div class="ac"><h3>ALERT #105 [BCP/DR]</h3>D:/System_Backup/NCKH/ is EMPTY.<br><b class="red">Rollback impossible!</b></div>
+ </div>
+ <div class="m" style="padding:6px 10px;display:flex;justify-content:space-between;align-items:center"><span class="dim">SIEM Real-time Threat Stream</span><button id="lk" disabled>EMERGENCY SYSTEM LOCKDOWN — Connection Failed</button></div>
+ <div class="log m" id="l8"><div class="dim">[02:49:58] SOC-ENGINE: Night shift nominal. 0 open incidents.</div></div>
+</div>
+<button id="fs" title="Toàn màn hình (F)">⛶ Toàn màn hình</button>
+<div id="hint" class="m">1–5: chuyển màn · Space/Click: kích hoạt · F: toàn màn hình · H: ẩn/hiện gợi ý · R: reset</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let cur=4,T=[];const later=(f,ms)=>T.push(setTimeout(f,ms)),every=(f,ms)=>T.push(setInterval(f,ms));
+const done={};
+function go(n){T.forEach(t=>{clearTimeout(t);clearInterval(t)});T=[];cur=n;done[n]=false;
+ $$('.scr').forEach(s=>s.classList.remove('on'));$('#s'+n).classList.add('on');init[n]()}
+const init={
+4(){$('#m4').classList.remove('min');$('#snz').style.display='none'},
+5(){$('#s5').classList.remove('al');$('#q').className='m grn b';$('#q').textContent='QUORUM OK – 10/10 VOTES';
+ $('#tr').innerHTML='▾ Datacenter<br>&nbsp;▾ DC-CAMPUS-CORE<br>&nbsp;&nbsp;▾ Cluster-01<br>'+[...Array(10)].map((_,i)=>`<div id="t${i}">🟢 node-srv-${String(i+1).padStart(2,'0')}.hcm-edu</div>`).join('');
+ $('#g5').innerHTML=[...Array(10)].map((_,i)=>{const n=String(i+1).padStart(2,'0');return`<div class="nd" id="n${i}"><b>srv-${n}</b><br>10.0.1.${10+i}<br>Kernel 6.5.0-${40+i%3}<br>CPU ${12+i*3}% · RAM ${48+i}GB<br>Load ${(0.4+i/20).toFixed(2)}<div class="st">[ACTIVE / HEALTHY]</div></div>`}).join('');
+ $('#l5').innerHTML='<div>00:04:58 | root@pam | Batch dist-upgrade sent to 10 targets | OK</div>';$('#cmd').textContent='ansible all -m shell -a "apt-get dist-upgrade -y && reboot"';
+ const p=[...Array(30)].map((_,i)=>`${i*20},${30+Math.sin(i)*4}`).join(' ');$('#pl').setAttribute('points',p);$('#pl').setAttribute('stroke','#22c55e');$('#thr').textContent='9.8 Gbps';$('#thr').className='grn'},
+6(){$('#pg').style.width='0';$('#al6').style.display='flex';$('#r1').classList.add('hot');$('#st').innerHTML='';$('#pps').textContent='Packets In: 0 pkts/sec'},
+7(){$('#m7').style.display='flex';$('#o7').textContent='';$$('[data-k]').forEach((c,i)=>{c.className='ck'+(i<4?' on':'');c.textContent=i<4?'✔':''})},
+8(){$('#s8').classList.remove('go');$$('.ac').forEach(a=>a.classList.remove('on'));$('#l8').innerHTML='<div class="dim">[02:49:58] SOC-ENGINE: Night shift nominal. 0 open incidents.</div>';
+ let s=5*3600+8*60+42;every(()=>{s--;const f=x=>String(x).padStart(2,'0');$('#cd').textContent=f(s/3600|0)+':'+f(s%3600/60|0)+':'+f(s%60)},1000)}
+};
+const act={
+4(){$('#m4').classList.add('min');later(()=>$('#snz').style.display='inline-block',350)},
+5(){if(done[5])return;done[5]=true;$('#s5').classList.add('al');
+ const L=$('#l5');const add=t=>{L.insertAdjacentHTML('beforeend',`<div class="red">${t}</div>`);L.scrollTop=1e5};
+ for(let i=0;i<10;i++)later(()=>{$('#n'+i).classList.add('x');$('#n'+i).querySelector('.st').textContent='[CRITICAL OFFLINE - CONNECTION DROPPED]';$('#n'+i).insertAdjacentHTML('beforeend','<div>CPU/RAM: Timeout / N/A</div>');$('#t'+i).innerHTML=$('#t'+i).innerHTML.replace('🟢','🔴')+' (Offline)';
+  add(`00:05:0${Math.min(i+1,9)} | cluster-daemon | Node ${String(i+1).padStart(2,'0')} heartbeat failed (timeout 5000ms)`);if(i%3==0)add(`00:05:0${i} | kernel | node-srv-${String(i+1).padStart(2,'0')}: Kernel panic - not syncing: VFS: Unable to mount root fs`);
+  $('#q').textContent=`QUORUM LOST - ${9-i}/10 VOTES`;$('#q').className='m red b blink'},i*350+100);
+ later(()=>{add('00:05:02 | corosync | Quorum lost! Cluster partitioned. 10/10 nodes uncontactable.');$('#pl').setAttribute('points',[...Array(30)].map((_,i)=>`${i*20},${i<14?32:i<17?32+(i-13)*28:118}`).join(' '));$('#pl').setAttribute('stroke','#ef4444');$('#thr').textContent='0.00 Kbps';$('#thr').className='red b'},3800)},
+6(){if(done[6])return;done[6]=true;$('#pg').style.width='100%';
+ later(()=>{$('#al6').style.display='none';$('#r1').classList.remove('hot');$('#r1').style.background='#fff7ed';
+  const ips=['185.220.101.5','45.154.255.89','91.240.118.172','193.32.162.7','5.188.206.14','103.77.192.9'];let n=0;
+  every(()=>{n+=1+Math.random()*3|0;const ip=ips[Math.random()*6|0],pt=Math.random()<.75?8080:22,sx=Math.random()<.5?'SYN_SENT':pt==22?'ESTABLISHED':'SYN_RCVD';
+   $('#st').insertAdjacentHTML('afterbegin',`<div>${ip}:${30000+Math.random()*30000|0} → 10.0.1.15:${pt} <span class="${sx=='ESTABLISHED'?'red':'yel'}">[${sx}]</span></div>`);
+   if($('#st').children.length>26)$('#st').lastChild.remove();$('#pps').textContent='Packets In: '+(400+n*38).toLocaleString()+' pkts/sec (Spike detected)'},260)},1300)},
+7(){$('#m7').style.display='none';$('#o7').innerHTML="Commands completed successfully. (1 row affected)<br>Security role altered on object 'dbo.tbl_Financial_Transactions'. Execution time: 00:00:00.182."},
+8(){if(done[8])return;done[8]=true;$('#s8').classList.add('go');$$('.ac').forEach((a,i)=>later(()=>a.classList.add('on'),600+i*700));
+ const msg=['SOC-ENGINE: Correlation rule \'Cascade Failure\' triggered.','THREAT-INTEL: Exfiltration volume: 4.8 GB outbound to external C2 server.','AUTH-SVC: Admin token revoked. Management plane unreachable.','FW-WAN: 1,842 pkts/sec inbound on 8080 from 185.220.101.5','DB-AUDIT: Mass UPDATE on tbl_Financial_Transactions (rows: 2,114,907)','BACKUP-SVC: Restore point not found at D:/System_Backup/NCKH/','LOCKDOWN-API: Connection failed (ERR_MGMT_PLANE_DOWN)'];let k=0;
+ every(()=>{const d=new Date(2026,0,1,2,50,k);const t=String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');$('#l8').insertAdjacentHTML('beforeend',`<div>[02:${t}] ${msg[k%msg.length]}</div>`);k++;$('#l8').scrollTop=1e5;if($('#l8').children.length>40)$('#l8').firstChild.remove()},550)}
+};
+$('#sn').onclick=e=>{e.stopPropagation();act[4]()};$('#ap').onclick=e=>{e.stopPropagation();act[6]()};
+$('#ok7').onclick=e=>{e.stopPropagation();act[7]()};$('#cn7').onclick=e=>{e.stopPropagation();$('#m7').style.display='none'};
+$$('[data-k]').forEach(c=>c.onclick=e=>{e.stopPropagation();const o=c.classList.toggle('on');c.textContent=o?'✔':''});
+document.addEventListener('keydown',e=>{
+ if(e.key>='1'&&e.key<='5')go(+e.key+3);
+ else if(e.code=='Space'){e.preventDefault();act[cur]()}
+ else if(e.key=='h'||e.key=='H')$('#hint').classList.toggle('on');
+ else if(e.key=='r'||e.key=='R')go(cur)});
+document.addEventListener('click',()=>{if(cur!=4&&cur!=6&&cur!=7)act[cur]()});
+setInterval(()=>$('#clk').textContent=new Date().toLocaleTimeString('en-GB'),1000);
+$('#hint').classList.add('on');setTimeout(()=>$('#hint').classList.remove('on'),4000);
+const fsT=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{});
+$('#fs').onclick=e=>{e.stopPropagation();fsT()};
+document.addEventListener('keydown',e=>{if(e.key=='f'||e.key=='F')fsT()});
+document.addEventListener('fullscreenchange',()=>$('#fs').classList.toggle('hide',!!document.fullscreenElement));
+go(4);
+</script></body></html>
